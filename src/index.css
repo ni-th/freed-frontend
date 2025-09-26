@@ -7,3 +7,15 @@ body{
 .rubik{
   font-family: "Rubik", sans-serif;
 }
+
+.home_card{
+  /* From https://css.glass */
+  background: rgba(135, 141, 255, 0.54);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(135, 141, 255, 0.3);
+  padding: 10px;
+  width: 100%;
+}

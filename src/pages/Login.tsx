@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api"; // Your shared axios instance
+import api from "../api";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    const admin = localStorage.getItem("admin");
+    if (admin) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +24,8 @@ const Login: React.FC = () => {
       const response = await api.post("/admin/login", { email, password });
 
       if (response.status === 200) {
-        // Save admin data in localStorage
         localStorage.setItem("admin", JSON.stringify(response.data));
-        navigate("/course-dashboard"); // Redirect after successful login
+        navigate("/dashboard"); // Redirect after login
       }
     } catch (err: any) {
       setError("Invalid email or password");

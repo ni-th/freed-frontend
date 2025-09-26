@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../api";
 import type { Course, Paper } from "../types/Types";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   // -------- Courses state --------
@@ -118,7 +119,11 @@ const Dashboard: React.FC = () => {
     }
     setShowPaperModal(true);
   };
-
+  const navigate = useNavigate();
+const handleLogout = () => {
+    localStorage.removeItem("admin");
+    navigate("/login");
+  };
   const closePaperModal = () => setShowPaperModal(false);
 
   const savePaper = async () => {
@@ -161,9 +166,20 @@ const Dashboard: React.FC = () => {
   // ----------------- Render -----------------
   return (
     <div className="container mt-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2>Dashboard</h2>
+        <button className="btn btn-danger" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
       {/* ------------- Course Dashboard ------------- */}
       <h2>Course Dashboard</h2>
-      <button className="btn btn-primary mb-3" onClick={() => openCourseModal()}>Create Course</button>
+      <button
+        className="btn btn-primary mb-3"
+        onClick={() => openCourseModal()}
+      >
+        Create Course
+      </button>
       <table className="table table-bordered mb-5">
         <thead>
           <tr>
@@ -174,14 +190,24 @@ const Dashboard: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {courses.map(course => (
+          {courses.map((course) => (
             <tr key={course.subjectID}>
               <td>{course.subjectID}</td>
               <td>{course.level}</td>
               <td>{course.subjectOrCourseName}</td>
               <td>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => openCourseModal(course)}>Edit</button>
-                <button className="btn btn-danger btn-sm" onClick={() => deleteCourse(course.subjectID)}>Delete</button>
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() => openCourseModal(course)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => deleteCourse(course.subjectID)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -190,7 +216,9 @@ const Dashboard: React.FC = () => {
 
       {/* ------------- Paper Dashboard ------------- */}
       <h2>Paper Dashboard</h2>
-      <button className="btn btn-primary mb-3" onClick={() => openPaperModal()}>Add Paper</button>
+      <button className="btn btn-primary mb-3" onClick={() => openPaperModal()}>
+        Add Paper
+      </button>
       <table className="table table-bordered mb-5">
         <thead>
           <tr>
@@ -205,7 +233,7 @@ const Dashboard: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {papers.map(paper => (
+          {papers.map((paper) => (
             <tr key={paper.uploadID}>
               <td>{paper.uploadID}</td>
               <td>{paper.level}</td>
@@ -215,8 +243,18 @@ const Dashboard: React.FC = () => {
               <td>{paper.year}</td>
               <td>{paper.medium}</td>
               <td>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => openPaperModal(paper)}>Edit</button>
-                <button className="btn btn-danger btn-sm" onClick={() => deletePaper(paper.uploadID)}>Delete</button>
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() => openPaperModal(paper)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => deletePaper(paper.uploadID)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -225,26 +263,60 @@ const Dashboard: React.FC = () => {
 
       {/* ---------- Course Modal ---------- */}
       {showCourseModal && (
-        <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">{editingCourse ? "Edit Course" : "Create Course"}</h5>
-                <button type="button" className="btn-close" onClick={closeCourseModal}></button>
+                <h5 className="modal-title">
+                  {editingCourse ? "Edit Course" : "Create Course"}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={closeCourseModal}
+                ></button>
               </div>
               <div className="modal-body">
-                <div className="mb-3">
+                <div className="col-md-4 mb-3">
                   <label className="form-label">Level</label>
-                  <input className="form-control" value={courseLevel} onChange={e => setCourseLevel(e.target.value)} required />
+                  <select
+                    className="form-select"
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Level</option>
+                    <option value="AL">AL</option>
+                    <option value="OL">OL</option>
+                    <option value="Grade 5">Grade 5</option>
+                    <option value="Degree">Degree</option>
+                  </select>
                 </div>
+
                 <div className="mb-3">
                   <label className="form-label">Course Name</label>
-                  <input className="form-control" value={courseName} onChange={e => setCourseName(e.target.value)} required />
+                  <input
+                    className="form-control"
+                    value={courseName}
+                    onChange={(e) => setCourseName(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={closeCourseModal}>Cancel</button>
-                <button className="btn btn-primary" onClick={saveCourse}>{editingCourse ? "Update" : "Create"}</button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={closeCourseModal}
+                >
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={saveCourse}>
+                  {editingCourse ? "Update" : "Create"}
+                </button>
               </div>
             </div>
           </div>
@@ -253,32 +325,55 @@ const Dashboard: React.FC = () => {
 
       {/* ---------- Paper Modal ---------- */}
       {showPaperModal && (
-        <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">{editingPaper ? "Edit Paper" : "Add Paper"}</h5>
-                <button className="btn-close" onClick={closePaperModal}></button>
+                <h5 className="modal-title">
+                  {editingPaper ? "Edit Paper" : "Add Paper"}
+                </h5>
+                <button
+                  className="btn-close"
+                  onClick={closePaperModal}
+                ></button>
               </div>
               <div className="modal-body">
                 <div className="row">
                   <div className="col-md-4 mb-3">
                     <label className="form-label">Course Name</label>
-                    <select className="form-control" value={paperCourseName} onChange={e => {
-                      const selected = courses.find(c => c.subjectOrCourseName === e.target.value);
-                      setPaperCourseName(e.target.value);
-                      setLevel(selected?.level || "");
-                    }} required>
+                    <select
+                      className="form-select"
+                      value={paperCourseName}
+                      onChange={(e) => {
+                        const selected = courses.find(
+                          (c) => c.subjectOrCourseName === e.target.value
+                        );
+                        setPaperCourseName(e.target.value);
+                        setLevel(selected?.level || "");
+                      }}
+                      required
+                    >
                       <option value="">Select Course</option>
-                      {courses.map(c => (
-                        <option key={c.subjectID} value={c.subjectOrCourseName}>{c.subjectOrCourseName}</option>
+                      {courses.map((c) => (
+                        <option key={c.subjectID} value={c.subjectOrCourseName}>
+                          {c.subjectOrCourseName}
+                        </option>
                       ))}
                     </select>
                   </div>
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label">Paper Type</label>
-                    <select className="form-control" value={paperType} onChange={e => setPaperType(e.target.value)} required>
+                    <select
+                      className="form-select"
+                      value={paperType}
+                      onChange={(e) => setPaperType(e.target.value)}
+                      required
+                    >
                       <option value="">Select Paper Type</option>
                       <option value="Marking Scheme">Marking Scheme</option>
                       <option value="Past Paper">Past Paper</option>
@@ -287,17 +382,40 @@ const Dashboard: React.FC = () => {
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label">Part</label>
-                    <input className="form-control" value={part} onChange={e => setPart(e.target.value)} required />
+                    <select
+                      className="form-select"
+                      value={part}
+                      onChange={(e) => setPart(e.target.value)}
+                      required
+                    >
+                      <option value="">Select Part</option>
+                      <option value="Part 1">Part 1</option>
+                      <option value="Part 2">Part 2</option>
+                      <option value="Full">Full</option>
+                    </select>
                   </div>
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label">Year</label>
-                    <input type="number" className="form-control" value={year} onChange={e => setYear(Number(e.target.value))} min={2000} max={new Date().getFullYear()} required />
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={year}
+                      onChange={(e) => setYear(Number(e.target.value))}
+                      min={2000}
+                      max={new Date().getFullYear()}
+                      required
+                    />
                   </div>
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label">Medium</label>
-                    <select className="form-control" value={medium} onChange={e => setMedium(e.target.value)} required>
+                    <select
+                      className="form-select"
+                      value={medium}
+                      onChange={(e) => setMedium(e.target.value)}
+                      required
+                    >
                       <option value="">Select Medium</option>
                       <option value="Sinhala">Sinhala</option>
                       <option value="Tamil">Tamil</option>
@@ -307,13 +425,22 @@ const Dashboard: React.FC = () => {
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label">URL</label>
-                    <input className="form-control" value={url} onChange={e => setUrl(e.target.value)} required />
+                    <input
+                      className="form-control"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={closePaperModal}>Cancel</button>
-                <button className="btn btn-primary" onClick={savePaper}>{editingPaper ? "Update" : "Add"}</button>
+                <button className="btn btn-secondary" onClick={closePaperModal}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={savePaper}>
+                  {editingPaper ? "Update" : "Add"}
+                </button>
               </div>
             </div>
           </div>

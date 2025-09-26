@@ -1,8 +1,16 @@
 import React from 'react'
+import Navbar from './layout/Navbar'
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
 
 const App = () => {
   return (
-    <div><button className='btn btn-danger'>sdad</button></div>
+    <>
+    <Navbar/>
+    <Routes>
+      <Route path='/' element={<Home/>}></Route>
+    </Routes>
+</>
   )
 }
 
